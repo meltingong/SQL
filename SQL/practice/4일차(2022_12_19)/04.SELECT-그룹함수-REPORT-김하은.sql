@@ -81,46 +81,6 @@ from(
 group by 연도
 order by "연도" desc;
 
-select extract(year from hiredate),
-        max(decode(extract(month from hiredate),'1',sal)) "1월",
-        max(decode(extract(month from hiredate),'2',sal)) "2월",
-        max(decode(extract(month from hiredate),'3',sal)) "3월",
-        max(decode(extract(month from hiredate),'4',sal)) "4월",
-        max(decode(extract(month from hiredate),'5',sal)) "5월",
-        max(decode(extract(month from hiredate),'6',sal)) "6월",
-        max(decode(extract(month from hiredate),'7',sal)) "7월",
-        max(decode(extract(month from hiredate),'8',sal)) "8월",
-        max(decode(extract(month from hiredate),'9',sal)) "9월",
-        max(decode(extract(month from hiredate),'10',sal)) "10월",
-        max(decode(extract(month from hiredate),'11',sal)) "11월",
-        max(decode(extract(month from hiredate),'12',sal)) "12월"
-from(
-    select  extract(year from hiredate) as 연도,
-            extract(month from hiredate) as 월,
-            sum(sal) as sal
-    from emp
-    group by extract(year from hiredate),extract(month from hiredate)
-    )
-group by extract(year from hiredate)
-order by "연도" desc;
-
-select  extract(year from hiredate) "연도",
-        decode(extract(month from hiredate),'1',sum(sal)) "1월",
-        decode(extract(month from hiredate),'2',sum(sal)) "2월",
-        decode(extract(month from hiredate),'3',sum(sal)) "3월",
-        decode(extract(month from hiredate),'4',sum(sal)) "4월",
-        decode(extract(month from hiredate),'5',sum(sal)) "5월",
-        decode(extract(month from hiredate),'6',sum(sal)) "6월",
-        decode(extract(month from hiredate),'7',sum(sal)) "7월",
-        decode(extract(month from hiredate),'8',sum(sal)) "8월",
-        decode(extract(month from hiredate),'9',sum(sal)) "9월",
-        decode(extract(month from hiredate),'10',sum(sal)) "10월",
-        decode(extract(month from hiredate),'11',sum(sal)) "11월",
-        decode(extract(month from hiredate),'12',sum(sal)) "12월",
-        sum(sal)
-from emp
-group by extract(year from hiredate),extract(month from hiredate)
-order by "연도" desc;
 
 /*
 4. 사원테이블에서 부서별 comm(커미션) 을 포함하지 않은 연봉의 합과
