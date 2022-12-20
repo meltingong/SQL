@@ -23,10 +23,12 @@ Software Engineering 	    182	      Sandra Bullock	     182
 -------------------------------------------------------------------------------
 */
 
-select d.dname,s."MAX_HEIGHT",s.name "NAME" , S.height "HEIGHT"
+select d.dname,s."MAX_HEIGHT",s2.name "NAME",s2.height "HEIGHT"
     from department d
-    join (select max(height) "MAX_HEIGHT",name,height,deptno1 from student) s
-    on s.deptno1 = d.deptno;
+    join (select max(height) "MAX_HEIGHT",deptno1 from student group by deptno1) s
+    on s.deptno1 = d.deptno
+    join (select name,height,deptno1 from student) s2
+    on s.deptno1 = s2.deptno1 and s."MAX_HEIGHT" = s2.height;
 
 
 /*
@@ -41,7 +43,18 @@ select d.dname,s."MAX_HEIGHT",s.name "NAME" , S.height "HEIGHT"
 
 select s1.grade,s1.name,s1.height,s2."avg_height" from student s1
     join (select grade,avg(height) "avg_height" from student group by grade) s2
-    on s1.height > s2."avg_height";
+    on s1.height > s2."avg_height" and s1.grade = s2.grade
+    order by grade;
+/*
+   GRADE AVG(HEIGHT)
+---------- -----------
+         1       170.4
+         2       175.6
+         3       166.6
+         4       175.8
+*/
+-- select grade,avg(height) from student group by grade order by grade;
+
 
 /*
 4.professor 테이블을 조회하여 교수들의 급여순위와 교수이름,급여를출력하세요
@@ -58,8 +71,12 @@ Ranking		NAME	PAY
 --------------------------------
 */
 
-
-
+select * from professor order by pay desc;
+select * 
+from(select rownum r, p.*
+        from(select name, pay  
+                from professor order by pay desc) p )
+    where r <= 5;
 
 
 /*결과2>
@@ -71,3 +88,9 @@ Ranking		NAME	PAY
     5	
 --------------------------------
 */
+select * 
+from(select rownum r, p.*
+        from(select name, pay  
+                from professor order by pay desc) p )
+    where r >= 3 and r < 6;
+
