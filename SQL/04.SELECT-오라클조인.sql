@@ -88,3 +88,7 @@ where e.mgr(+) = m.empno
 union
 select e.empno , e.ename, e.mgr, m.empno "매니저 사번", m.ename "매니저 이름" from emp e, emp m
 where e.mgr = m.empno(+);
+
+
+
+

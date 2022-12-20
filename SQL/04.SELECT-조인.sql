@@ -190,6 +190,29 @@ from emp e
 right outer join emp m
 on e.mgr = m.empno;
 
+--계층형 질의
+select level,rpad(' ',2*level)||empno,ename,sal,job,mgr
+    from emp
+    start with ename = 'KING'
+    connect by prior empno = mgr;
+
+select level,rpad(' ',2*level)||empno,ename,sal,job,mgr
+    from emp
+    start with empno = 7698
+    connect by prior empno = mgr;
+    
+select level,rpad(' ',2*level)||empno,ename,sal,job,mgr
+    from emp
+    start with ename = 'KING'
+    connect by prior empno = mgr and ename != 'BLAKE';
+
+select ename, sys_connect_by_path(ename,'/10000')
+    from emp
+    start with ename = 'KING'
+    connect by prior empno = mgr;
+
+
+
 /***********************************
 on 조인조건에서 filtering 하는 경우와 
 where 구문에서 filtering 하는 경우

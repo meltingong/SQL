@@ -63,6 +63,126 @@ from emp
 group by deptno,job
 order by deptno asc,job asc;
 
+--가로출력
+select  deptno,
+        sum(sal)
+from emp
+group by deptno
+order by deptno;
+
+/*
+  DEPTNO   SUM(SAL)
+---------- ----------
+        10       8750
+        20      10875
+        30       9400
+*/
+
+select  sum(sal) from emp;
+/*
+        10         20         30      
+---------- ---------- ----------
+      8750      10875       9400    
+*/
+select  sum(decode(deptno,'10',sal)) as "10" , 
+        sum(decode(deptno,'20',sal)) as "20" , 
+        sum(decode(deptno,'30',sal)) as "30" , 
+        sum(sal) "전체급여합" from emp;
+        
+/*
+JOB         SUM(SAL)
+--------- ----------
+CLERK           4150
+SALESMAN        5600
+PRESIDENT       5000
+MANAGER         8275
+ANALYST         6000
+
+*/
+
+select job,sum(sal) from emp
+group by job;
+
+--rollup()함수 : 총계 산출(아래쪽에 총계 산출)
+select job,sum(sal) from emp
+group by rollup(job);
+
+select deptno,job,sum(sal) from emp
+group by rollup(deptno,job);
+
+--cube()함수 : 총계 산출(위쪽에 총계 산출)
+select job,sum(sal) from emp
+group by cube(job);
+
+select deptno,job,sum(sal) from emp
+group by cube(deptno,job);
+
+
+select  sum(decode(job,'CLERK',sal)) "CLERK",
+        sum(decode(job,'MANAGER',sal)) "MANAGER",
+        sum(decode(job,'PRESIDENT',sal)) "PRESIDENT",
+        sum(decode(job,'ANALYST',sal)) "ANALYST",
+        sum(decode(job,'SALESMAN',sal)) "SALESMAN"
+from emp;
+
+
+
+
+/*
+ DEPTNO      CLERK    MANAGER  PRESIDENT    ANALYST   SALESMAN
+---------- ---------- ---------- ---------- ---------- ----------
+        10       1300       2450       5000                      
+        20       1900       2975                  6000           
+        30        950       2850                             5600
+*/
+select  deptno,
+        sum(decode(job,'CLERK',sal)) "CLERK",
+        sum(decode(job,'MANAGER',sal)) "MANAGER",
+        sum(decode(job,'PRESIDENT',sal)) "PRESIDENT",
+        sum(decode(job,'ANALYST',sal)) "ANALYST",
+        sum(decode(job,'SALESMAN',sal)) "SALESMAN"
+from emp
+group by deptno
+order by deptno asc;
+
+
+
+select  deptno, 
+        sum(sal) "CLERK", sum(sal) "MANAGER",sum(sal) "PRESIDENT",sum(sal) "ANALYST" ,sum(sal) "SALESMAN"
+from emp
+group by deptno
+order by deptno asc;
+
+--listagg() : 가로출력 함수
+
+select listagg(ename,',') within group(order by ename) from emp;
+
+select deptno,listagg(ename,'/') within group(order by ename) 
+    from emp
+    group by deptno;
+
+select deptno,job,listagg(ename,'/') within group(order by ename) 
+    from emp
+    group by deptno,job;
+
+select job,sum(sal),listagg(ename||'('||sal||')',',') within group (order by sal) from emp group by job;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
