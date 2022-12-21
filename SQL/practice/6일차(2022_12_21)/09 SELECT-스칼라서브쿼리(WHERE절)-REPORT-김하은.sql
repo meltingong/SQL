@@ -30,4 +30,4 @@ select empno,ename,sal from emp where sal > (select sal from emp where empno = 7
 5. 사원 테이블에서 부서별 최대 급여를 받는 사원들의 사번, 이름, 부서코드, 급여를 검색하시오.
 */
 
-select empno,ename,deptno,sal from emp where sal in(select max(sal) from emp group by deptno);
+select empno,ename,deptno,sal from emp e1 where sal in(select max(sal) from emp e2 where e1.deptno = e2.deptno group by deptno);
