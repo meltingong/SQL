@@ -322,7 +322,124 @@ delete dept4 where deptno = 10;
 delete dept4 where deptno = 20;
 delete dept4 where deptno = 30;
 
+rollback; --insert 부터 delete 까지 하나의 transaction 이기때문에 rollback 하게되면 insert전으로 롤백됨 그래서 insert끝난 후에 commit해야함
+
+
+--2. foreign key option(on delete set null)
+--parent table
+drop table dept5;
+create table dept5(
+    deptno number(4) primary key,
+    dname varchar(30) not null,
+    loc varchar(100)
+);
+
+insert into dept5 values(10,'인사','서울');
+insert into dept5 values(20,'생산','울산');
+insert into dept5 values(30,'영업','대구');
+insert into dept5 values(40,'홍보','청주');
+
+
+--child table(fk)
+drop table emp5;
+create table emp5(
+    empno number(4) primary key,
+    ename varchar(50),
+    sal number(10),
+    deptno number(4),
+    constraint emp5_deptno_fk foreign key(deptno) references dept5(deptno) on delete set null 
+);
+
+insert into emp5 values(1111,'KIM',3000,10);
+insert into emp5 values(2222,'LIM',4500,10);
+insert into emp5 values(3333,'MIM',6700,10);
+insert into emp5 values(4444,'NIM',2300,20);
+insert into emp5 values(5555,'OIM',1200,20);
+insert into emp5 values(6666,'GIM',8800,30);
+insert into emp5 values(7777,'ZIM',9900,30);
+insert into emp5 values(8888,'RIM',1000,null);
+insert into emp5 values(9999,'SIM',2000,null);
+commit;
+
+select * from dept5;
+select * from emp5;
+
+-- 부서 10번 삭제 시 소속된 사원의 deptno를 null로 만듬
+delete dept5 where deptno = 10;
+delete dept5 where deptno = 20;
+delete dept5 where deptno = 30;
+
 rollback;
+
+/**************테이블 생성 이후에 foreign key 추가 제거*********************/
+drop table dept6;
+create table dept6(
+    deptno number(4),
+    dname varchar2(50),
+    loc  varchar2(50)
+);
+
+
+drop table emp6;
+create table emp6(
+    empno number(4),
+    ename varchar2(50),
+    sal number(10),
+    deptno number(4)
+);
+
+
+--pk add(설정)
+alter table dept6 add constraint dept6_deptno_pk primary key(deptno);
+alter table emp6 add constraint emp6_empno_pk primary key(empno);
+
+--fk add(설정)
+alter table emp6 add constraint emp6_deptno_fk foreign key(deptno) references dept6(deptno);
+
+--fk drop(삭제)
+alter table emp6 drop constraint emp6_deptno_fk;
+
+--pk drop(삭제)
+alter table dept6 drop constraint dept6_deptno_pk;
+alter table emp6 drop constraint emp6_empno_pk;
+
+/********************************
+5. check constraint
+*********************************/
+drop table emp7;
+create table emp7(
+    empno number(4) primary key,
+    ename varchar2(50) not null,
+    sal number(10) constraint emp7_sal_ck check(sal >= 500 and sal <= 5000),
+    gender char(1) default 'f',
+    constraint emp7_gender_ck check(gender = 'm' or gender = 'f')
+);
+
+select * from emp7;
+insert into emp7 values(1,'KIM',800,'f');
+insert into emp7 values(2,'GIM',3000,'m');
+
+--ORA-02290: check constraint (SCOTT.EMP7_SAL_CK) violated
+insert into emp7 values(3,'VIM',6000,'m');
+
+--ORA-02290: check constraint (SCOTT.EMP7_GENDER_CK) violated
+insert into emp7 values(4,'ZIM',5000,'a');
+
+/*
+drop : 테이블을 삭제하는 명령어(DDL) - 복구할 수 없음(한개의 transaction)
+*/
+create table emp8(
+    empno number(4) primary key,
+    ename varchar(50) not null,
+    sal number(10),
+    gender char(1) default 'f'
+);
+
+drop table emp8;
+rollback; -- 안됨
+
+
+
 
 
 
